@@ -2,8 +2,18 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import random
+import os
+from dotenv import load_dotenv
+from supabase import create_client, Client
+
+load_dotenv()
 
 app = FastAPI()
+
+# Supabase setup
+url: str = os.environ.get("SUPABASE_URL")
+key: str = os.environ.get("SUPABASE_KEY")
+supabase: Client = create_client(url, key) if url and key else None
 
 app.add_middleware(
     CORSMiddleware,
@@ -145,13 +155,46 @@ def run_simulation(params: SimulationParams):
     avg_comp_price = sum(active_comp_prices) / len(active_comp_prices) if active_comp_prices else 0
 
     # Package everything into the summary dictionary
+    summary = {
+        "total_profit": round(dynamic_cumulative_profit, 2),
+        "total_units_sold": total_units_sold,
+        "competitor_total_profit": round(competitor_cumulative_profit, 2),
+        "avg_user_price": round(avg_user_price, 2),
+        "avg_competitor_price": round(avg_comp_price, 2)
+    }
+
+    # --- NEW: Database Integration ---
+    if supabase:
+        try:
+            # 1. Insert simulation summary
+            sim_data = {
+                "initial_price": params.initial_price,
+                "cost_price": params.cost_price,
+                "total_inventory": params.total_inventory,
+                "base_demand": params.base_demand,
+                "sensitivity": params.sensitivity,
+                **summary
+            }
+            res = supabase.table("simulations").insert(sim_data).execute()
+            
+            if len(res.data) > 0:
+                simulation_id = res.data[0]["id"]
+                
+                # 2. Insert simulation history
+                history_to_insert = []
+                for h in history:
+                    history_record = {
+                        "simulation_id": simulation_id,
+                        **h
+                    }
+                    history_to_insert.append(history_record)
+                
+                supabase.table("simulation_history").insert(history_to_insert).execute()
+                print(f"Successfully saved simulation {simulation_id} to database.")
+        except Exception as e:
+            print(f"Error saving to database: {e}")
+
     return {
         "history": history, 
-        "summary": {
-            "total_profit": round(dynamic_cumulative_profit, 2),
-            "total_units_sold": total_units_sold,
-            "competitor_total_profit": round(competitor_cumulative_profit, 2),
-            "avg_user_price": round(avg_user_price, 2),
-            "avg_competitor_price": round(avg_comp_price, 2)
-        }
+        "summary": summary
     }
