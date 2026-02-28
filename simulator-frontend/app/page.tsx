@@ -80,7 +80,7 @@ export default function SimulatorDashboard() {
 
   const customTooltipStyle = { backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '8px', color: '#fff' };
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload, label, showInsight = false }: any) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
@@ -91,9 +91,11 @@ export default function SimulatorDashboard() {
               <span className="font-semibold">{entry.name}:</span> {entry.value.toLocaleString()}
             </p>
           ))}
-          <div className="mt-2 pt-2 border-t border-indigo-500/30 text-indigo-300 italic max-w-[200px]">
-            {data.insight}
-          </div>
+          {showInsight && (
+            <div className="mt-2 pt-2 border-t border-indigo-500/30 text-indigo-300 italic max-w-[200px]">
+              {data.insight}
+            </div>
+          )}
         </div>
       );
     }
@@ -193,7 +195,7 @@ export default function SimulatorDashboard() {
                     <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                     <XAxis dataKey="day" stroke="#9ca3af" />
                     <YAxis stroke="#9ca3af" domain={['dataMin - 5', 'dataMax + 5']} />
-                    <Tooltip content={<CustomTooltip />} />
+                    <Tooltip content={<CustomTooltip showInsight={true} />} />
                     <Legend verticalAlign="top" height={36} />
                     
                     <Line type="monotone" dataKey="user_price" name="Your Optimized Price ($)" stroke="#3b82f6" strokeWidth={3} dot={{ r: 3, fill: '#3b82f6' }} activeDot={{ r: 6 }} />
@@ -210,7 +212,7 @@ export default function SimulatorDashboard() {
                     <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} />
                     <XAxis dataKey="day" stroke="#9ca3af" />
                     <YAxis stroke="#9ca3af" domain={[0, 100]} />
-                    <Tooltip content={<CustomTooltip />} />
+                    <Tooltip content={<CustomTooltip showInsight={false} />} />
                     <Legend verticalAlign="top" height={36} />
                     <Area type="monotone" dataKey="market_share" name="Market Share (%)" fill="#10b981" stroke="#059669" fillOpacity={0.4} />
                   </AreaChart>
@@ -226,7 +228,7 @@ export default function SimulatorDashboard() {
                     <XAxis dataKey="day" stroke="#9ca3af" />
                     <YAxis yAxisId="left" stroke="#f59e0b" />
                     <YAxis yAxisId="right" orientation="right" stroke="#8b5cf6" />
-                    <Tooltip content={<CustomTooltip />} />
+                    <Tooltip content={<CustomTooltip showInsight={false} />} />
                     <Legend verticalAlign="top" height={36} />
                     <Bar yAxisId="left" dataKey="items_sold" name="Daily Sales" fill="#f59e0b" radius={[4, 4, 0, 0]} />
                     <Area yAxisId="right" type="step" dataKey="stock_level" name="Inventory Remaining" fill="#8b5cf6" stroke="#7c3aed" fillOpacity={0.2} />
@@ -245,7 +247,7 @@ export default function SimulatorDashboard() {
                     <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                     <XAxis dataKey="day" stroke="#9ca3af" />
                     <YAxis stroke="#9ca3af" />
-                    <Tooltip content={<CustomTooltip />} />
+                    <Tooltip content={<CustomTooltip showInsight={false} />} />
                     <Legend verticalAlign="top" height={36} />
                     
                     {/* The Green Line: Your AI */}
