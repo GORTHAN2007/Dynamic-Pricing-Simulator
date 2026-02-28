@@ -120,7 +120,9 @@ Vercel (Frontend) / Railway (Backend).
 * **Endpoint 3:** `GET /api/v1/simulation/history/{id}` - Fetches all time-steps for chart rendering.
 
 ### API Testing Screenshots
-*(Add Postman / Thunder Client screenshots here)*
+![System Architecture](images/api-testing-1.jpeg)
+
+![System Architecture](images/api-testing-2.png)
 
 ## 10. Module-wise Development & Deliverables
 
@@ -147,7 +149,7 @@ User inputs Product Data → Sets Daily Price → Backend calculates Demand & Bo
 
 ## 12. Demo & Video
 * **Live Demo Link:** [Insert Link]
-* **GitHub Repository:** [Insert Link]
+* **GitHub Repository:** https://github.com/GORTHAN2007/Dynamic-Pricing-Simulator
 
 ## 13. Hackathon Deliverables Summary
 * Interactive Pricing "War Room" Dashboard.
