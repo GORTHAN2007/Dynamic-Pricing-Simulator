@@ -14,7 +14,7 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Nexus | Enterprise AI Pricing",
+  title: "Optiflux",
   description: "Advanced Dynamic Pricing Simulation Engine",
 };
 
