@@ -159,8 +159,8 @@ User inputs Product Data → Sets Daily Price → Backend calculates Demand & Bo
 | Member Name | Role | Responsibilities |
 | :--- | :--- | :--- |
 | **Arju Srivastav** | **Product Lead & Integration** | UVP, UI Design, Git Management, System Integration. |
-| **Member 2** | **Backend Architect** | FastAPI Development, Simulation Math, Competitor Logic. |
-| **Member 3** | **Frontend Developer** | Dashboard Layout, Recharts Integration, Responsive Design. |
+| **Dhruv Baheti** | **Backend Architect** | FastAPI Development, Simulation Math, Competitor Logic. |
+| **Aridaman Singh** | **Frontend Developer** | Dashboard Layout, Recharts Integration, Responsive Design. |
 
 ## 15. Future Scope & Scalability
 
