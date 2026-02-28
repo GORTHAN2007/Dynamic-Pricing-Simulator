@@ -31,3 +31,27 @@ The primary issue is the high financial risk associated with real-world pricing 
 
 ### Solution Strategy
 Our approach is to build a **Dynamic Pricing Simulator** that enables strategic experimentation in a controlled environment. We utilize a mathematical demand-elasticity engine and autonomous competitor bots to visualize the friction between pricing, market share, and stock levels over time.
+
+## 3. Proposed Solution
+
+### Solution Overview
+Our simulator provides a high-fidelity "War Room" dashboard where users can configure product parameters and run pricing strategies across simulated time periods.
+
+### Core Idea
+To democratize advanced economic modeling by providing an interactive platform where users "play" against different market personalities to find the optimal price-to-inventory balance. The objective is to create simulation engine that enables strategic pricing experimentation in a controlled environment.
+
+### Key Features
+* **Configurable Parameters:** Users can adjust base demand, price sensitivity, and inventory constraints.
+* **Intelligent Competitor Bots:** Models reactions from "Aggressive Under-cutters" to "Premium Players".
+* **Dynamic Visualizations:** Animated time-series charts for scenario comparison of revenue, market share, and stock levels.
+
+## 4. System Architecture
+
+### High-Level Flow
+**User** → **Next.js Frontend** → **FastAPI Backend** → **Simulation Engine** → **Supabase Database** → **Visual Response**
+
+### Architecture Description
+The system follows a decoupled architecture. The **Frontend** (Next.js) handles state management and real-time chart rendering via Recharts. The **Backend** (FastAPI) executes the core simulation loops, demand math, and competitor agent logic.
+
+### Architecture Diagram:
+![System Architecture](./images/architecture-diagram.png)
