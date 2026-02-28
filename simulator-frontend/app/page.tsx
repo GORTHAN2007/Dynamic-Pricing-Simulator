@@ -57,6 +57,7 @@ export default function SimulatorDashboard() {
   const [activeDay, setActiveDay] = useState<HistoryData | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleHover = (state: any) => {
     if (state && state.activePayload) {
       setActiveDay(state.activePayload[0].payload);
@@ -94,13 +95,13 @@ export default function SimulatorDashboard() {
     boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5)'
   };
 
-  const CustomTooltip = ({ active, payload, label, showInsight = false }: any) => {
+  const CustomTooltip = ({ active, payload, label, showInsight = false }: { active?: boolean; payload?: { name: string; value: number; color?: string; stroke?: string; payload: HistoryData }[]; label?: string; showInsight?: boolean }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
         <div style={customTooltipStyle} className="p-4 text-sm font-sans">
           <p className="text-white/60 font-bold mb-3 pb-2 border-b border-white/10 uppercase tracking-widest text-xs">Day {label}</p>
-          {payload.map((entry: any, index: number) => (
+          {payload.map((entry, index) => (
             <div key={index} className="flex items-center justify-between gap-6 mb-1.5">
               <span className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color || entry.stroke }} />
@@ -226,8 +227,8 @@ export default function SimulatorDashboard() {
             </h3>
             <p className="text-xs font-mono text-white/70 leading-relaxed min-h-[80px] relative z-10">
               {activeDay
-                ? <span className="text-white/90">Day {activeDay.day} // <span className="text-accent-cyan drop-shadow-[0_0_5px_rgba(6,182,212,0.3)]">{activeDay.insight}</span></span>
-                : <span className="text-white/30">Hover over the graphs to see the AI's reasoning for each pricing decision.</span>}
+                ? <span className="text-white/90">Day {activeDay.day} <span className="text-white/40 px-1">{`//`}</span> <span className="text-accent-cyan drop-shadow-[0_0_5px_rgba(6,182,212,0.3)]">{activeDay.insight}</span></span>
+                : <span className="text-white/30">Hover over the graphs to see the AI&apos;s reasoning for each pricing decision.</span>}
             </p>
           </div>
 
