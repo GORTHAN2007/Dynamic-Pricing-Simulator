@@ -54,4 +54,4 @@ To democratize advanced economic modeling by providing an interactive platform w
 The system follows a decoupled architecture. The **Frontend** (Next.js) handles state management and real-time chart rendering via Recharts. The **Backend** (FastAPI) executes the core simulation loops, demand math, and competitor agent logic.
 
 ### Architecture Diagram:
-![System Architecture](./images/architecture-diagram.png)
+![System Architecture](images/architecture-diagram.png)
