@@ -20,12 +20,17 @@ interface HistoryData {
   market_share: number;
   items_sold: number;
   stock_level: number;
+  dynamic_cumulative_profit: number; 
+  static_cumulative_profit: number;  
 }
 
 // Interface for the new summary statistics
 interface SummaryData {
   total_profit: number;
   total_units_sold: number;
+  competitor_total_profit: number;
+  avg_user_price: number;
+  avg_competitor_price: number;
 }
 
 export default function SimulatorDashboard() {
@@ -34,15 +39,18 @@ export default function SimulatorDashboard() {
     cost_price: 30,
     total_inventory: 3000,
     base_demand: 200,
-    sensitivity: 1.5,
+    sensitivity: 2.5,
   });
 
   const [history, setHistory] = useState<HistoryData[]>([]);
   
-  // 1. New state to store the summary metrics from the backend
+  // 1. Properly initialized state for all 5 metrics
   const [summary, setSummary] = useState<SummaryData>({ 
     total_profit: 0, 
-    total_units_sold: 0 
+    total_units_sold: 0,
+    competitor_total_profit: 0,
+    avg_user_price: 0,
+    avg_competitor_price: 0
   });
 
   const runSimulation = async () => {
@@ -54,7 +62,6 @@ export default function SimulatorDashboard() {
       });
       const data = await response.json();
       
-      // 2. Set both the history and the summary data
       setHistory(data.history);
       setSummary(data.summary);
     } catch (error) {
@@ -104,16 +111,39 @@ export default function SimulatorDashboard() {
             </div>
           ) : (
             <>
-              {/* 3. New Summary Cards Section */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-gradient-to-br from-green-900/40 to-gray-800 p-5 rounded-xl border border-green-500/30 shadow-xl">
-                  <p className="text-green-400 text-xs font-bold uppercase tracking-widest mb-1">Total Net Profit</p>
-                  <p className="text-4xl font-black text-white">${summary.total_profit.toLocaleString()}</p>
+              {/* --- NEW 5-CARD SUMMARY SCOREBOARD --- */}
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-2">
+                
+                {/* Your AI Profit */}
+                <div className="bg-gradient-to-br from-green-900/40 to-gray-800 p-4 rounded-xl border border-green-500/30 shadow-xl">
+                  <p className="text-green-400 text-[10px] font-bold uppercase tracking-widest mb-1">Your AI Profit</p>
+                  <p className="text-2xl font-black text-white">${summary.total_profit.toLocaleString()}</p>
                 </div>
-                <div className="bg-gradient-to-br from-blue-900/40 to-gray-800 p-5 rounded-xl border border-blue-500/30 shadow-xl">
-                  <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-1">Units Sold</p>
-                  <p className="text-4xl font-black text-white">{summary.total_units_sold.toLocaleString()} <span className="text-lg font-normal text-gray-400">units</span></p>
+
+                {/* Competitor Profit */}
+                <div className="bg-gradient-to-br from-red-900/40 to-gray-800 p-4 rounded-xl border border-red-500/30 shadow-xl">
+                  <p className="text-red-400 text-[10px] font-bold uppercase tracking-widest mb-1">Competitor Profit</p>
+                  <p className="text-2xl font-black text-white">${summary.competitor_total_profit.toLocaleString()}</p>
                 </div>
+
+                {/* Your Average Price */}
+                <div className="bg-gradient-to-br from-blue-900/40 to-gray-800 p-4 rounded-xl border border-blue-500/30 shadow-xl">
+                  <p className="text-blue-400 text-[10px] font-bold uppercase tracking-widest mb-1">Your Avg Price</p>
+                  <p className="text-2xl font-black text-white">${summary.avg_user_price.toLocaleString()}</p>
+                </div>
+
+                {/* Competitor Average Price */}
+                <div className="bg-gradient-to-br from-pink-900/40 to-gray-800 p-4 rounded-xl border border-pink-500/30 shadow-xl">
+                  <p className="text-pink-400 text-[10px] font-bold uppercase tracking-widest mb-1">Comp. Avg Price</p>
+                  <p className="text-2xl font-black text-white">${summary.avg_competitor_price.toLocaleString()}</p>
+                </div>
+
+                {/* Units Sold */}
+                <div className="bg-gradient-to-br from-purple-900/40 to-gray-800 p-4 rounded-xl border border-purple-500/30 shadow-xl">
+                  <p className="text-purple-400 text-[10px] font-bold uppercase tracking-widest mb-1">Units Sold</p>
+                  <p className="text-2xl font-black text-white">{summary.total_units_sold.toLocaleString()}</p>
+                </div>
+
               </div>
 
               {/* GRAPH 1: Price War */}
@@ -162,6 +192,29 @@ export default function SimulatorDashboard() {
                     <Bar yAxisId="left" dataKey="items_sold" name="Daily Sales" fill="#f59e0b" radius={[4, 4, 0, 0]} />
                     <Area yAxisId="right" type="step" dataKey="stock_level" name="Inventory Remaining" fill="#8b5cf6" stroke="#7c3aed" fillOpacity={0.2} />
                   </ComposedChart>
+                </ResponsiveContainer>
+              </div>
+              
+              {/* GRAPH 4: A/B Test - Dynamic vs Static Profit */}
+              <div className="bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-700" style={{ height: '350px' }}>
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg font-semibold text-gray-300">A/B Test: Cumulative Profit ($)</h2>
+                  <span className="bg-indigo-600 text-white text-xs font-bold px-2 py-1 rounded">ROI PROOF</span>
+                </div>
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={history} margin={{ top: 5, right: 30, left: 0, bottom: 20 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                    <XAxis dataKey="day" stroke="#9ca3af" />
+                    <YAxis stroke="#9ca3af" />
+                    <Tooltip contentStyle={customTooltipStyle} />
+                    <Legend verticalAlign="top" height={36} />
+                    
+                    {/* The Green Line: Your AI */}
+                    <Line type="monotone" dataKey="dynamic_cumulative_profit" name="Dynamic Pricing AI" stroke="#10b981" strokeWidth={4} dot={false} />
+                    
+                    {/* The Gray Line: The "Do Nothing" approach */}
+                    <Line type="monotone" dataKey="static_cumulative_profit" name="Static Pricing (Initial Price)" stroke="#6b7280" strokeWidth={2} strokeDasharray="5 5" dot={false} />
+                  </LineChart>
                 </ResponsiveContainer>
               </div>
             </>
