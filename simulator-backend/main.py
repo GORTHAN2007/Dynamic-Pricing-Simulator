@@ -24,57 +24,69 @@ class SimulationParams(BaseModel):
 def run_simulation(params: SimulationParams):
     history = []
     current_inventory = params.total_inventory
-    user_price = params.initial_price
+    current_user_price = params.initial_price
     
-    # FIX: Ensure base demand is always high enough to generate sales, 
-    # even if you type a massive initial price in the UI.
-    working_base_demand = max(params.base_demand, int(user_price * params.sensitivity) + 80)
+    total_profit = 0
+    total_units_sold = 0
     
-    # 1. Extend to 30 Days
+    working_base_demand = max(params.base_demand, int(current_user_price * params.sensitivity) + 80)
+    
     for day in range(1, 31): 
-        
-        # 2. The Weekend Surge (Every 7th day, demand spikes)
+        if current_inventory <= 0:
+            history.append({"day": day, "user_price": 0, "competitor_price": 0, "market_share": 0, "items_sold": 0, "stock_level": 0})
+            continue
+
         is_weekend = (day % 7 == 6) or (day % 7 == 0)
         daily_base_demand = int(random.gauss(working_base_demand + (100 if is_weekend else 0), 20))
         
-        # 3. Dynamic Pricing Engine
-        # If we drop below 30% inventory, raise prices by 20% to slow down sales
-        if current_inventory > 0 and current_inventory < (params.total_inventory * 0.3):
-            user_price = params.initial_price * 1.2 
-        else:
-            user_price = params.initial_price
-        
-        # 4. AI Competitor Bots
-        if random.random() < 0.30:
-            aggressive_price = user_price * 0.75 # 25% Flash Sale
-        else:
-            aggressive_price = user_price * 0.90 # Standard 10% undercutting
+        # Competitor targets your previous price
+        aggressive_price = current_user_price * random.uniform(0.85, 0.95)
+        if random.random() < 0.15: aggressive_price *= 0.70 
             
-        premium_price = max(params.initial_price * 1.2, params.cost_price + 50) 
+        # PROFIT OPTIMIZER: Testing strategies to find max profit
+        best_daily_profit = -1
+        final_daily_price = params.cost_price + 5
+        final_daily_sales = 0
+
+        strategies = [aggressive_price * 0.95, aggressive_price, aggressive_price * 1.05, params.initial_price]
         
-        # 5. Demand Calculation
-        raw_quantity = daily_base_demand - (params.sensitivity * user_price)
-        daily_sales = max(0, int(raw_quantity)) 
+        for test_price in strategies:
+            actual_test_price = max(test_price, params.cost_price + 2)
+            q = daily_base_demand - (params.sensitivity * actual_test_price)
+            
+            if actual_test_price > aggressive_price:
+                q *= 0.5 
+            
+            est_sales = min(max(0, int(q)), current_inventory)
+            est_profit = (actual_test_price - params.cost_price) * est_sales
+            
+            if est_profit > best_daily_profit:
+                best_daily_profit = est_profit
+                final_daily_price = actual_test_price
+                final_daily_sales = est_sales
+
+        current_user_price = final_daily_price
+        current_inventory -= final_daily_sales
         
-        # If competitor runs a flash sale, you lose 50% of your daily customers
-        if aggressive_price < (user_price * 0.80):
-            daily_sales = int(daily_sales * 0.50)
-            
-        if daily_sales > current_inventory:
-            daily_sales = current_inventory
-            
-        # 6. Financials
-        daily_profit = (user_price - params.cost_price) * daily_sales if current_inventory > 0 else 0
-        current_inventory -= daily_sales
-        if current_inventory < 0: 
-            current_inventory = 0
+        total_profit += best_daily_profit
+        total_units_sold += final_daily_sales
+        
+        share = (final_daily_sales / daily_base_demand * 100) if daily_base_demand > 0 else 0
         
         history.append({
             "day": day,
-            "revenue": daily_profit, 
-            "stock_level": current_inventory,
-            "competitor_price": aggressive_price,
-            "premium_price": premium_price
+            "user_price": round(current_user_price, 2),
+            "competitor_price": round(aggressive_price, 2),
+            "market_share": round(share, 2),
+            "items_sold": final_daily_sales,
+            "stock_level": current_inventory
         })
 
-    return {"history": history}
+    # Return the history PLUS the summary metrics
+    return {
+        "history": history, 
+        "summary": {
+            "total_profit": round(total_profit, 2),
+            "total_units_sold": total_units_sold
+        }
+    }
