@@ -55,3 +55,124 @@ The system follows a decoupled architecture. The **Frontend** (Next.js) handles 
 
 ### Architecture Diagram:
 ![System Architecture](images/architecture-diagram.png)
+
+## 5. Database Design
+
+### ER Diagram
+
+
+### ER Diagram Description
+The database tracks `Simulations`, which house multiple `TimeSteps`. Each `TimeStep` records `UserPrice`, `CompetitorPrice`, `UnitsSold`, and `RemainingInventory` to allow for historical session comparisons.
+
+## 6. Dataset Selected
+
+### Dataset Name
+Synthetic E-commerce Elasticity Model.
+
+### Source
+Derived from standard economic demand-supply equilibrium formulas (Linear Demand Model).
+
+### Data Type
+Time-series numerical data.
+
+### Selection Reason
+Synthetic data allows for pure "What-If" scenario testing and stress-testing edge cases (like stockouts) without the bias of specific historical datasets.
+
+## 7. Model Selected
+
+### Model Name
+Linear Demand Elasticity with Stochastic Noise.
+
+### Selection Reasoning
+Provides a transparent and adjustable simulation framework that remains mathematically sound while allowing for real-time interactivity.
+
+### Alternatives Considered
+* **Constant Elasticity Model:** Rejected due to higher computational overhead for 24-hour real-time feedback.
+
+### Evaluation Metrics
+* **Revenue Maximization Ratio**
+* **Inventory Turnover Rate**
+* **Market Share Stability**
+
+## 8. Technology Stack
+
+### Frontend
+Next.js, Tailwind CSS, Recharts, shadcn/ui.
+
+### Backend
+Python (FastAPI), Uvicorn.
+
+### ML/AI
+Logic-based Competitor Agents (Behavioral Trees/Game Theory).
+
+### Database
+Supabase (PostgreSQL).
+
+### Deployment
+Vercel (Frontend) / Railway (Backend).
+
+## 9. API Documentation & Testing
+
+### API Endpoints List
+
+* **Endpoint 1:** `POST /api/v1/simulation/start` - Initializes session with product/inventory parameters.
+* **Endpoint 2:** `POST /api/v1/simulation/step` - Processes a single day's pricing decision and returns bot reactions.
+* **Endpoint 3:** `GET /api/v1/simulation/history/{id}` - Fetches all time-steps for chart rendering.
+
+### API Testing Screenshots
+*(Add Postman / Thunder Client screenshots here)*
+
+## 10. Module-wise Development & Deliverables
+
+### Checkpoint 1: Research & Planning
+[cite_start]**Deliverables:** Finalized UVP, Problem Definition, and Repository Setup[cite: 14].
+
+### Checkpoint 2: Backend Development
+[cite_start]**Deliverables:** FastAPI structure, Demand Logic, and Competitor Bot AI[cite: 16].
+
+### Checkpoint 3: Frontend Development
+[cite_start]**Deliverables:** Dashboard Layout, Input Sliders, and Chart Components[cite: 23].
+
+### Checkpoint 4: Model Training
+**Deliverables:** Fine-tuning bot reaction parameters and elasticity coefficients.
+
+### Checkpoint 5: Model Integration
+**Deliverables:** E2E data flow between pricing sliders and animated charts.
+
+### Checkpoint 6: Deployment
+[cite_start]**Deliverables:** Live URL and Demo Data preparation[cite: 25, 26].
+
+## 11. End-to-End Workflow
+User inputs Product Data → Sets Daily Price → Backend calculates Demand & Bot Reaction → Inventory updates → Frontend animates results on a 30-day timeline.
+
+## 12. Demo & Video
+* **Live Demo Link:** [Insert Link]
+* **GitHub Repository:** [Insert Link]
+
+## 13. Hackathon Deliverables Summary
+* Interactive Pricing "War Room" Dashboard.
+* Automated Competitor AI Reaction Engine.
+* Real-time Revenue & Stock Analytics.
+
+## 14. Team Roles & Responsibilities
+
+| Member Name | Role | Responsibilities |
+| :--- | :--- | :--- |
+| **Arju Srivastav** | **Product Lead & Integration** | UVP, UI Design, Git Management, System Integration. |
+| **Member 2** | **Backend Architect** | FastAPI Development, Simulation Math, Competitor Logic. |
+| **Member 3** | **Frontend Developer** | Dashboard Layout, Recharts Integration, Responsive Design. |
+
+## 15. Future Scope & Scalability
+
+### Short-Term
+* Integration with Shopify/Amazon APIs for live inventory syncing.
+* Multi-product simulation (simulating cross-product cannibalization).
+
+### Long-Term
+* Reinforcement Learning (RL) agents for self-optimizing pricing.
+
+## 16. Known Limitations
+* Currently assumes a closed market environment with one primary competitor per simulation.
+
+## 17. Impact
+Enables e-commerce businesses to protect profit margins and prevent destructive price wars, potentially saving thousands in lost revenue and inventory mismanagement.
