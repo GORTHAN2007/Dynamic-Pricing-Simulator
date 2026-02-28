@@ -194,23 +194,31 @@ export default function SimulatorDashboard() {
                 onClick={runSimulation}
                 disabled={isSimulating}
                 className={`w-full mt-8 relative overflow-hidden group/btn bg-obsidian-900 rounded-xl border text-white font-bold py-4 px-4 transition-all duration-300 ${isSimulating
-                    ? 'border-accent-cyan shadow-[0_0_30px_rgba(6,182,212,0.6)] scale-[0.98]'
+                    ? 'border-accent-amethyst/50 shadow-[0_0_20px_rgba(139,92,246,0.3)] scale-[0.98]'
                     : 'border-white/10 hover:shadow-[0_0_25px_rgba(6,182,212,0.3)] active:scale-[0.98]'
                   }`}
               >
-                <div className={`absolute inset-0 w-full h-full transition-opacity duration-500 ${isSimulating
-                    ? 'bg-gradient-to-r from-accent-cyan via-accent-amethyst to-accent-cyan opacity-100 animate-[pulse_1.5s_ease-in-out_infinite]'
-                    : 'bg-gradient-to-r from-accent-cyan via-accent-emerald to-accent-amethyst opacity-50 group-hover/btn:opacity-100'
+                {/* Default Background */}
+                <div className={`absolute inset-0 w-full h-full transition-opacity duration-500 bg-gradient-to-r from-accent-cyan via-accent-emerald to-accent-amethyst ${isSimulating
+                    ? 'opacity-0'
+                    : 'opacity-50 group-hover/btn:opacity-100'
                   }`} />
+
+                {/* Animated Scanner Background */}
+                {isSimulating && (
+                  <div className="absolute inset-0 overflow-hidden rounded-xl">
+                    <div className="absolute top-0 bottom-0 w-1/2 bg-gradient-to-r from-transparent via-accent-amethyst/40 to-transparent animate-[scan-line_1.5s_linear_infinite]" />
+                  </div>
+                )}
+
                 <span className="relative z-10 flex items-center justify-center gap-2 drop-shadow-md text-sm uppercase tracking-widest">
                   {isSimulating ? (
-                    <>
-                      <span className="relative flex h-3 w-3 mr-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
+                    <div className="flex items-center gap-3">
+                      <div className="w-4 h-4 rounded-full border-2 border-accent-amethyst border-t-transparent animate-spin" />
+                      <span className="font-mono text-[11px] text-accent-amethyst tracking-[0.3em] font-black drop-shadow-[0_0_8px_rgba(139,92,246,0.8)]">
+                        PROCESSING_DATA
                       </span>
-                      <span className="animate-pulse font-black tracking-[0.2em] text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]">SIMULATING</span>
-                    </>
+                    </div>
                   ) : (
                     <>
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3" /></svg>

@@ -65,3 +65,13 @@
     @apply bg-obsidian-800/60 backdrop-blur-xl border border-white/5 shadow-xl;
   }
 }
+
+@keyframes scan-line {
+  0% {
+    transform: translateX(-150%) skewX(-20deg);
+  }
+
+  100% {
+    transform: translateX(250%) skewX(-20deg);
+  }
+}
