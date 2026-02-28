@@ -193,17 +193,23 @@ export default function SimulatorDashboard() {
               <button
                 onClick={runSimulation}
                 disabled={isSimulating}
-                className="w-full mt-8 relative overflow-hidden group/btn bg-obsidian-900 rounded-xl border border-white/10 text-white font-bold py-4 px-4 transition-all hover:shadow-[0_0_25px_rgba(6,182,212,0.3)] active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:shadow-none"
+                className={`w-full mt-8 relative overflow-hidden group/btn bg-obsidian-900 rounded-xl border text-white font-bold py-4 px-4 transition-all duration-300 ${isSimulating
+                    ? 'border-accent-cyan shadow-[0_0_30px_rgba(6,182,212,0.6)] scale-[0.98]'
+                    : 'border-white/10 hover:shadow-[0_0_25px_rgba(6,182,212,0.3)] active:scale-[0.98]'
+                  }`}
               >
-                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-accent-cyan via-accent-emerald to-accent-amethyst opacity-50 group-hover/btn:opacity-100 transition-opacity duration-500" />
+                <div className={`absolute inset-0 w-full h-full transition-opacity duration-500 ${isSimulating
+                    ? 'bg-gradient-to-r from-accent-cyan via-accent-amethyst to-accent-cyan opacity-100 animate-[pulse_1.5s_ease-in-out_infinite]'
+                    : 'bg-gradient-to-r from-accent-cyan via-accent-emerald to-accent-amethyst opacity-50 group-hover/btn:opacity-100'
+                  }`} />
                 <span className="relative z-10 flex items-center justify-center gap-2 drop-shadow-md text-sm uppercase tracking-widest">
                   {isSimulating ? (
                     <>
-                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Simulating...
+                      <span className="relative flex h-3 w-3 mr-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
+                      </span>
+                      <span className="animate-pulse font-black tracking-[0.2em] text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]">SIMULATING</span>
                     </>
                   ) : (
                     <>
