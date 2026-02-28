@@ -112,6 +112,19 @@ def run_simulation(params: SimulationParams):
         
         share = (final_daily_sales / daily_base_demand * 100) if daily_base_demand > 0 else 0
         
+        # --- NEW: Strategic Insight Logic ---
+        insight = "Maintaining stable pricing strategy."
+        if dynamic_inventory <= 0:
+            insight = "Inventory exhausted. Operation halted to prevent overselling."
+        elif final_daily_price < prev_dynamic_price * 0.95:
+             insight = "Aggressive undercut detected. Optimized for volume to protect net margin and market share."
+        elif final_daily_price > prev_dynamic_price * 1.05:
+            insight = "High market demand detected. Increasing price floor to maximize revenue per unit."
+        elif dynamic_inventory < params.total_inventory * 0.1:
+            insight = "Critical stock levels. Slowing sales velocity via price premium to preserve remaining margin."
+        elif share < 20:
+            insight = "Low market penetration. Adjusting pricing models to regain competitive momentum."
+
         history.append({
             "day": day,
             "user_price": round(final_daily_price, 2) if dynamic_inventory > 0 else 0,
@@ -120,7 +133,8 @@ def run_simulation(params: SimulationParams):
             "items_sold": final_daily_sales,
             "stock_level": dynamic_inventory,
             "dynamic_cumulative_profit": round(dynamic_cumulative_profit, 2),
-            "static_cumulative_profit": round(static_cumulative_profit, 2)
+            "static_cumulative_profit": round(static_cumulative_profit, 2),
+            "insight": insight
         })
 
     # --- NEW: Calculate Average Prices (Ignoring stockout days where price is 0) ---

@@ -21,7 +21,8 @@ interface HistoryData {
   items_sold: number;
   stock_level: number;
   dynamic_cumulative_profit: number; 
-  static_cumulative_profit: number;  
+  static_cumulative_profit: number;
+  insight: string;
 }
 
 // Interface for the new summary statistics
@@ -53,6 +54,14 @@ export default function SimulatorDashboard() {
     avg_competitor_price: 0
   });
 
+  const [activeDay, setActiveDay] = useState<HistoryData | null>(null);
+
+  const handleHover = (state: any) => {
+    if (state && state.activePayload) {
+      setActiveDay(state.activePayload[0].payload);
+    }
+  };
+
   const runSimulation = async () => {
     try {
       const response = await fetch("http://127.0.0.1:8000/api/simulate", {
@@ -70,6 +79,26 @@ export default function SimulatorDashboard() {
   };
 
   const customTooltipStyle = { backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '8px', color: '#fff' };
+
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div className="bg-gray-800 border border-gray-700 p-3 rounded-lg shadow-xl text-sm">
+          <p className="text-gray-400 font-bold mb-1 border-b border-gray-700 pb-1">Day {label}</p>
+          {payload.map((entry: any, index: number) => (
+            <p key={index} style={{ color: entry.color }}>
+              <span className="font-semibold">{entry.name}:</span> {entry.value.toLocaleString()}
+            </p>
+          ))}
+          <div className="mt-2 pt-2 border-t border-indigo-500/30 text-indigo-300 italic max-w-[200px]">
+            {data.insight}
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
     <div className="min-h-screen p-8 bg-gray-900 text-white font-sans">
@@ -99,6 +128,16 @@ export default function SimulatorDashboard() {
             <button onClick={runSimulation} className="w-full mt-6 bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded transition shadow-lg">
               Run 30-Day Simulation
             </button>
+          </div>
+
+          {/* Strategic Insight Box */}
+          <div className="mt-8 p-4 bg-indigo-900/30 border border-indigo-500/50 rounded-lg">
+            <h3 className="text-sm font-bold text-indigo-300 uppercase tracking-widest mb-2">Strategic Insight</h3>
+            <p className="text-sm text-gray-200 italic">
+              {activeDay 
+                ? `Day ${activeDay.day}: ${activeDay.insight}` 
+                : "Hover over the graphs to see the AI's reasoning for each pricing decision."}
+            </p>
           </div>
         </div>
 
@@ -150,11 +189,11 @@ export default function SimulatorDashboard() {
               <div className="bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-700" style={{ height: '350px' }}>
                 <h2 className="text-lg font-semibold mb-4 text-gray-300">Strategy vs. Competitor Price</h2>
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={history} margin={{ top: 5, right: 30, left: 0, bottom: 20 }}>
+                  <LineChart data={history} margin={{ top: 5, right: 30, left: 0, bottom: 20 }} onMouseMove={handleHover}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                     <XAxis dataKey="day" stroke="#9ca3af" />
                     <YAxis stroke="#9ca3af" domain={['dataMin - 5', 'dataMax + 5']} />
-                    <Tooltip contentStyle={customTooltipStyle} />
+                    <Tooltip content={<CustomTooltip />} />
                     <Legend verticalAlign="top" height={36} />
                     
                     <Line type="monotone" dataKey="user_price" name="Your Optimized Price ($)" stroke="#3b82f6" strokeWidth={3} dot={{ r: 3, fill: '#3b82f6' }} activeDot={{ r: 6 }} />
@@ -167,11 +206,11 @@ export default function SimulatorDashboard() {
               <div className="bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-700" style={{ height: '300px' }}>
                 <h2 className="text-lg font-semibold mb-4 text-gray-300">Market Share Capture (%)</h2>
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={history} margin={{ top: 5, right: 30, left: 0, bottom: 20 }}>
+                  <AreaChart data={history} margin={{ top: 5, right: 30, left: 0, bottom: 20 }} onMouseMove={handleHover}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} />
                     <XAxis dataKey="day" stroke="#9ca3af" />
                     <YAxis stroke="#9ca3af" domain={[0, 100]} />
-                    <Tooltip contentStyle={customTooltipStyle} />
+                    <Tooltip content={<CustomTooltip />} />
                     <Legend verticalAlign="top" height={36} />
                     <Area type="monotone" dataKey="market_share" name="Market Share (%)" fill="#10b981" stroke="#059669" fillOpacity={0.4} />
                   </AreaChart>
@@ -182,12 +221,12 @@ export default function SimulatorDashboard() {
               <div className="bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-700" style={{ height: '350px' }}>
                 <h2 className="text-lg font-semibold mb-4 text-gray-300">Inventory Levels & Daily Velocity</h2>
                 <ResponsiveContainer width="100%" height="100%">
-                  <ComposedChart data={history} margin={{ top: 5, right: 30, left: 0, bottom: 20 }}>
+                  <ComposedChart data={history} margin={{ top: 5, right: 30, left: 0, bottom: 20 }} onMouseMove={handleHover}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                     <XAxis dataKey="day" stroke="#9ca3af" />
                     <YAxis yAxisId="left" stroke="#f59e0b" />
                     <YAxis yAxisId="right" orientation="right" stroke="#8b5cf6" />
-                    <Tooltip contentStyle={customTooltipStyle} />
+                    <Tooltip content={<CustomTooltip />} />
                     <Legend verticalAlign="top" height={36} />
                     <Bar yAxisId="left" dataKey="items_sold" name="Daily Sales" fill="#f59e0b" radius={[4, 4, 0, 0]} />
                     <Area yAxisId="right" type="step" dataKey="stock_level" name="Inventory Remaining" fill="#8b5cf6" stroke="#7c3aed" fillOpacity={0.2} />
@@ -202,11 +241,11 @@ export default function SimulatorDashboard() {
                   <span className="bg-indigo-600 text-white text-xs font-bold px-2 py-1 rounded">ROI PROOF</span>
                 </div>
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={history} margin={{ top: 5, right: 30, left: 0, bottom: 20 }}>
+                  <LineChart data={history} margin={{ top: 5, right: 30, left: 0, bottom: 20 }} onMouseMove={handleHover}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                     <XAxis dataKey="day" stroke="#9ca3af" />
                     <YAxis stroke="#9ca3af" />
-                    <Tooltip contentStyle={customTooltipStyle} />
+                    <Tooltip content={<CustomTooltip />} />
                     <Legend verticalAlign="top" height={36} />
                     
                     {/* The Green Line: Your AI */}

@@ -17,6 +17,7 @@ def test_simulate_success():
     assert "history" in data
     assert "summary" in data
     assert len(data["history"]) == 30
+    assert "insight" in data["history"][0]
     assert "total_profit" in data["summary"]
 
 def test_simulate_invalid_params():
