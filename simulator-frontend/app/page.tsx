@@ -193,18 +193,32 @@ export default function SimulatorDashboard() {
               <button
                 onClick={runSimulation}
                 disabled={isSimulating}
-                className="w-full mt-8 relative overflow-hidden group/btn bg-obsidian-900 rounded-xl border border-white/10 text-white font-bold py-4 px-4 transition-all hover:shadow-[0_0_25px_rgba(6,182,212,0.3)] active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:shadow-none"
+                className={`w-full mt-8 relative overflow-hidden group/btn bg-obsidian-900 rounded-xl border text-white font-bold py-4 px-4 transition-all duration-300 ${isSimulating
+                    ? 'border-accent-amethyst/50 shadow-[0_0_20px_rgba(139,92,246,0.3)] scale-[0.98]'
+                    : 'border-white/10 hover:shadow-[0_0_25px_rgba(6,182,212,0.3)] active:scale-[0.98]'
+                  }`}
               >
-                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-accent-cyan via-accent-emerald to-accent-amethyst opacity-50 group-hover/btn:opacity-100 transition-opacity duration-500" />
+                {/* Default Background */}
+                <div className={`absolute inset-0 w-full h-full transition-opacity duration-500 bg-gradient-to-r from-accent-cyan via-accent-emerald to-accent-amethyst ${isSimulating
+                    ? 'opacity-0'
+                    : 'opacity-50 group-hover/btn:opacity-100'
+                  }`} />
+
+                {/* Animated Scanner Background */}
+                {isSimulating && (
+                  <div className="absolute inset-0 overflow-hidden rounded-xl">
+                    <div className="absolute top-0 bottom-0 w-1/2 bg-gradient-to-r from-transparent via-accent-amethyst/40 to-transparent animate-[scan-line_1.5s_linear_infinite]" />
+                  </div>
+                )}
+
                 <span className="relative z-10 flex items-center justify-center gap-2 drop-shadow-md text-sm uppercase tracking-widest">
                   {isSimulating ? (
-                    <>
-                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Simulating...
-                    </>
+                    <div className="flex items-center gap-3">
+                      <div className="w-4 h-4 rounded-full border-2 border-accent-amethyst border-t-transparent animate-spin" />
+                      <span className="font-mono text-[11px] text-accent-amethyst tracking-[0.3em] font-black drop-shadow-[0_0_8px_rgba(139,92,246,0.8)]">
+                        PROCESSING_DATA
+                      </span>
+                    </div>
                   ) : (
                     <>
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3" /></svg>
