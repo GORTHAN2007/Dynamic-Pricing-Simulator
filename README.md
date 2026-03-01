@@ -178,3 +178,7 @@ User inputs Product Data → Sets Daily Price → Backend calculates Demand & Bo
 
 ## 17. Impact
 Enables e-commerce businesses to protect profit margins and prevent destructive price wars, potentially saving thousands in lost revenue and inventory mismanagement.
+
+
+## Drive Link: https://drive.google.com/drive/folders/1RfRQSaGhd0C6TvYFEbhvAI_3TtzT21KN?usp=drive_link
+## PPT link: https://www.canva.com/design/DAHCrpCozOA/hy5DzBjnM3j05e8b_cbQ2Q/edit
