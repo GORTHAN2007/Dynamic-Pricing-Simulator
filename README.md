@@ -150,6 +150,8 @@ User inputs Product Data → Sets Daily Price → Backend calculates Demand & Bo
 ## 12. Demo & Video
 * **Live Demo Link:** [Insert Link]
 * **GitHub Repository:** https://github.com/GORTHAN2007/Dynamic-Pricing-Simulator
+* frontend - https://optiflux-frontend-b5w4pjrhb-gorthan2007s-projects.vercel.app/
+* backend - https://optiflux-backend.onrender.com
 
 ## 13. Hackathon Deliverables Summary
 * Interactive Pricing "War Room" Dashboard.
