@@ -18,7 +18,7 @@ supabase: Client = create_client(url, key) if url and key else None
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], 
-    allow_credentials=False,
+    allow_credentials=True,
     allow_methods=["*"], 
     allow_headers=["*"], 
 )
